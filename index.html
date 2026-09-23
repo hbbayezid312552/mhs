@@ -53,6 +53,12 @@ async function uploadImage() {
     console.log(data);
 }
 </script>
+  const { data } = supabaseClient
+    .storage
+    .from("school-files")
+    .getPublicUrl("gallery/আপনার-ছবির-নাম.jpg");
+
+console.log(data.publicUrl);
   <body>
 
 <header class="site-header">
