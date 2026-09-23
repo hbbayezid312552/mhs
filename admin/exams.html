@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>পরীক্ষা ব্যবস্থাপনা | Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar"></aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="mobile-admin-toggle btn btn-outline btn-sm" id="admin-sidebar-toggle">☰ মেনু</button>
+      <h1>পরীক্ষা ব্যবস্থাপনা</h1>
+      <button class="btn btn-primary" id="add-exam-btn">+ পরীক্ষা তৈরি করুন</button>
+    </div>
+    <div class="admin-panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>পরীক্ষার নাম</th><th>ধরন</th><th>সাল</th><th>শ্রেণি</th><th>পূর্ণমান</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="exams-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="exam-modal">
+  <div class="modal-box">
+    <h3>নতুন পরীক্ষা তৈরি করুন</h3>
+    <form id="exam-form">
+      <div class="form-group">
+        <label>পরীক্ষার ধরন</label>
+        <select class="form-control" id="e-type" required>
+          <option value="ক্লাস টেস্ট">১. ক্লাস টেস্ট</option>
+          <option value="অর্ধবার্ষিক পরীক্ষা">২. অর্ধবার্ষিক পরীক্ষা</option>
+          <option value="ফাইনাল পরীক্ষা">৩. ফাইনাল পরীক্ষা</option>
+        </select>
+      </div>
+      <div class="form-group"><label>পরীক্ষার নাম</label><input class="form-control" id="e-name" required placeholder="যেমনঃ অর্ধবার্ষিক পরীক্ষা ২০২৬"></div>
+      <div class="form-row">
+        <div class="form-group"><label>সাল</label><input class="form-control" id="e-year" required placeholder="2026"></div>
+        <div class="form-group"><label>শ্রেণি</label>
+          <select class="form-control" id="e-class" required>
+            <option value="৬ষ্ঠ">৬ষ্ঠ</option><option value="৭ম">৭ম</option><option value="৮ম">৮ম</option>
+            <option value="৯ম">৯ম</option><option value="১০ম">১০ম</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>পরীক্ষার তারিখ</label><input type="date" class="form-control" id="e-date"></div>
+        <div class="form-group"><label>পূর্ণমান</label><input type="number" class="form-control" id="e-fullMarks" value="100" required></div>
+      </div>
+      <div class="flex gap-12 mt-16">
+        <button type="button" class="btn btn-outline btn-block" onclick="document.getElementById('exam-modal').classList.remove('open')">বাতিল</button>
+        <button type="submit" class="btn btn-primary btn-block">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  guardAdminPage();
+  const tbody = document.getElementById("exams-tbody");
+
+  async function reload() {
+    tbody.innerHTML = `<tr><td colspan="7">লোড হচ্ছে...</td></tr>`;
+    const exams = await fetchCollection(window.__FB.COLLECTIONS.EXAMS, "exams");
+    if (!exams.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty-state">কোনো পরীক্ষা নেই</td></tr>`; return; }
+    tbody.innerHTML = exams.map(e => `
+      <tr>
+        <td>${escapeHtml(e.name)}</td><td>${escapeHtml(e.type || '')}</td><td>${escapeHtml(e.year)}</td>
+        <td>${escapeHtml(e.class)}</td><td>${escapeHtml(e.fullMarks)}</td><td>${escapeHtml(e.date || '-')}</td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteExam('${e.id}')">ডিলিট</button></td>
+      </tr>`).join("");
+  }
+  await reload();
+
+  document.getElementById("add-exam-btn").addEventListener("click", () => document.getElementById("exam-modal").classList.add("open"));
+
+  document.getElementById("exam-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+      type: document.getElementById("e-type").value,
+      name: document.getElementById("e-name").value.trim(),
+      year: document.getElementById("e-year").value.trim(),
+      class: document.getElementById("e-class").value,
+      date: document.getElementById("e-date").value,
+      fullMarks: Number(document.getElementById("e-fullMarks").value)
+    };
+    if (!window.__FB || !window.__FB.firebaseReady) { showToast("Firebase কনফিগার করা নেই (ডেমো মোড)", "error"); return; }
+    try {
+      await window.__FB.db.collection(window.__FB.COLLECTIONS.EXAMS).add(data);
+      showToast("পরীক্ষা তৈরি করা হয়েছে");
+      document.getElementById("exam-modal").classList.remove("open");
+      document.getElementById("exam-form").reset();
+      await reload();
+    } catch (err) { showToast("সংরক্ষণে সমস্যা: " + err.message, "error"); }
+  });
+
+  window.deleteExam = async (id) => {
+    if (!confirm("এই পরীক্ষা মুছে ফেলতে চান?")) return;
+    if (!window.__FB || !window.__FB.firebaseReady) return;
+    await window.__FB.db.collection(window.__FB.COLLECTIONS.EXAMS).doc(id).delete();
+    showToast("পরীক্ষা মুছে ফেলা হয়েছে");
+    await reload();
+  };
+});
+</script>
+</body>
+</html>

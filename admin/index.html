@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | মোসলেমগঞ্জ উচ্চ বিদ্যালয়</title>
+<link rel="icon" href="../assets/images/favicon.png">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+  <div class="login-box">
+    <div class="text-center mb-16">
+      <img src="../assets/images/logo.png" alt="Logo" style="width:60px;margin:0 auto 10px" onerror="this.src='https://placehold.co/80x80/0b5d3b/ffffff?text=MHS'">
+    </div>
+    <h2>অ্যাডমিন লগইন</h2>
+    <p class="sub">মোসলেমগঞ্জ উচ্চ বিদ্যালয় ব্যবস্থাপনা প্যানেল</p>
+    <div id="login-alert" class="alert" style="display:none"></div>
+    <form id="login-form">
+      <div class="form-group">
+        <label>ইমেইল</label>
+        <input type="email" id="login-email" class="form-control" required placeholder="admin@moslemganjhs.edu.bd">
+      </div>
+      <div class="form-group">
+        <label>পাসওয়ার্ড</label>
+        <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">লগইন করুন</button>
+    </form>
+    <p class="text-center mt-16"><a href="#" id="forgot-password" style="color:var(--teal);font-weight:600;font-size:.88rem">পাসওয়ার্ড ভুলে গেছেন?</a></p>
+    <p class="text-center mt-16"><a href="../index.html" style="color:var(--text-muted);font-size:.85rem">← ওয়েবসাইটে ফিরে যান</a></p>
+    <p class="text-center mt-16" style="font-size:.75rem;color:var(--text-muted)">
+      প্রথমবার সেটআপ করছেন? Firebase Console থেকে প্রথম অ্যাডমিন অ্যাকাউন্ট তৈরির নির্দেশনা <strong>README.md</strong>-এ দেখুন।
+    </p>
+  </div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+</body>
+</html>

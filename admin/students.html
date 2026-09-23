@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>শিক্ষার্থী ব্যবস্থাপনা | Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar"></aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="mobile-admin-toggle btn btn-outline btn-sm" id="admin-sidebar-toggle">☰ মেনু</button>
+      <h1>শিক্ষার্থী ব্যবস্থাপনা</h1>
+      <button class="btn btn-primary" id="add-student-btn">+ শিক্ষার্থী যোগ করুন</button>
+    </div>
+
+    <div class="admin-panel">
+      <input type="text" id="admin-search-student" class="form-control" style="max-width:320px;margin-bottom:18px" placeholder="নাম / রোল / আইডি দিয়ে খুঁজুন">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ছবি</th><th>নাম</th><th>শ্রেণি</th><th>রোল</th><th>আইডি</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add/Edit Student Modal -->
+<div class="modal-overlay" id="student-modal">
+  <div class="modal-box">
+    <h3 id="student-modal-title">নতুন শিক্ষার্থী যোগ করুন</h3>
+    <form id="student-form">
+      <input type="hidden" id="student-doc-id">
+      <div class="form-row">
+        <div class="form-group"><label>পূর্ণ নাম</label><input class="form-control" id="f-name" required></div>
+        <div class="form-group"><label>শিক্ষার্থী আইডি</label><input class="form-control" id="f-studentId" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>শ্রেণি</label>
+          <select class="form-control" id="f-class" required>
+            <option value="৬ষ্ঠ">৬ষ্ঠ</option><option value="৭ম">৭ম</option><option value="৮ম">৮ম</option>
+            <option value="৯ম">৯ম</option><option value="১০ম">১০ম</option>
+          </select>
+        </div>
+        <div class="form-group"><label>শাখা</label><input class="form-control" id="f-section" placeholder="ক / খ / গ"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>রোল</label><input class="form-control" id="f-roll" required></div>
+        <div class="form-group"><label>ভর্তির সাল</label><input class="form-control" id="f-admissionYear"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>পিতার নাম</label><input class="form-control" id="f-father"></div>
+        <div class="form-group"><label>মাতার নাম</label><input class="form-control" id="f-mother"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>জন্ম তারিখ</label><input type="date" class="form-control" id="f-dob"></div>
+        <div class="form-group"><label>লিঙ্গ</label>
+          <select class="form-control" id="f-gender"><option value="ছেলে">ছেলে</option><option value="মেয়ে">মেয়ে</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>ঠিকানা</label><input class="form-control" id="f-address"></div>
+      <div class="form-group"><label>অভিভাবকের মোবাইল</label><input class="form-control" id="f-guardianMobile"></div>
+      <div class="form-group"><label>শিক্ষার্থীর ছবি</label><input type="file" class="form-control" id="f-photo" accept="image/*"></div>
+      <div class="flex gap-12 mt-16">
+        <button type="button" class="btn btn-outline btn-block" onclick="closeStudentModal()">বাতিল</button>
+        <button type="submit" class="btn btn-primary btn-block">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/students.js"></script>
+<script>document.addEventListener("DOMContentLoaded", () => guardAdminPage());</script>
+</body>
+</html>

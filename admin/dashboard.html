@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ড্যাশবোর্ড | Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar"></aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="mobile-admin-toggle btn btn-outline btn-sm" id="admin-sidebar-toggle">☰ মেনু</button>
+      <h1>ড্যাশবোর্ড</h1>
+      <a href="../index.html" class="btn btn-outline btn-sm" target="_blank">🌐 সাইট দেখুন</a>
+    </div>
+
+    <div class="stat-cards" id="stat-cards">
+      <div class="stat-card"><div class="num">-</div><div class="label">মোট শিক্ষার্থী</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">মোট শিক্ষক</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">প্রকাশিত ফলাফল</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">মোট নোটিশ</div></div>
+    </div>
+
+    <div class="admin-panel">
+      <h3 style="color:var(--deep-green);margin-bottom:14px">শ্রেণিভিত্তিক শিক্ষার্থী সংখ্যা</h3>
+      <div class="grid grid-4" id="class-stats"></div>
+    </div>
+
+    <div class="admin-panel">
+      <h3 style="color:var(--deep-green);margin-bottom:6px">স্বাগতম!</h3>
+      <p style="color:var(--text-muted)">এই প্যানেল থেকে শিক্ষার্থী, শিক্ষক, রুটিন, পরীক্ষা, ফলাফল, নোটিশ ও গ্যালারি পরিচালনা করতে পারবেন। বাম পাশের মেনু ব্যবহার করুন।</p>
+    </div>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  guardAdminPage();
+  const students = await fetchCollection(window.__FB.COLLECTIONS.STUDENTS, "students");
+  const teachers = await fetchCollection(window.__FB.COLLECTIONS.TEACHERS, "teachers");
+  const results = await fetchCollection(window.__FB.COLLECTIONS.RESULTS, "results");
+  const notices = await fetchCollection(window.__FB.COLLECTIONS.NOTICES, "notices");
+
+  const cards = document.querySelectorAll("#stat-cards .stat-card .num");
+  cards[0].textContent = students.length;
+  cards[1].textContent = teachers.length;
+  cards[2].textContent = results.filter(r => r.published).length;
+  cards[3].textContent = notices.length;
+
+  const classStats = document.getElementById("class-stats");
+  classStats.innerHTML = window.DEMO.classes.map(c => {
+    const count = students.filter(s => s.class === c).length;
+    return `<div class="stat-card" style="border-left-color:var(--gold)"><div class="num">${count}</div><div class="label">${c} শ্রেণি</div></div>`;
+  }).join("");
+});
+</script>
+</body>
+</html>

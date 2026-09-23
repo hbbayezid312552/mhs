@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>সেটিংস / স্কুল তথ্য | Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar"></aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="mobile-admin-toggle btn btn-outline btn-sm" id="admin-sidebar-toggle">☰ মেনু</button>
+      <h1>স্কুল তথ্য ও সেটিংস</h1>
+    </div>
+
+    <div class="admin-panel">
+      <h3 style="color:var(--deep-green);margin-bottom:16px">বিদ্যালয়ের পরিচিতি</h3>
+      <form id="school-info-form">
+        <div class="form-group"><label>পরিচিতি (About)</label><textarea class="form-control" id="si-intro" rows="3"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>প্রতিষ্ঠার সাল</label><input class="form-control" id="si-established"></div>
+          <div class="form-group"><label>ঠিকানা</label><input class="form-control" id="si-address"></div>
+        </div>
+        <div class="form-group"><label>লক্ষ্য (Mission)</label><textarea class="form-control" id="si-mission" rows="2"></textarea></div>
+        <div class="form-group"><label>উদ্দেশ্য (Vision)</label><textarea class="form-control" id="si-vision" rows="2"></textarea></div>
+        <div class="form-group"><label>বিদ্যালয়ের পরিবেশ</label><textarea class="form-control" id="si-environment" rows="2"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>ফোন</label><input class="form-control" id="si-phone"></div>
+          <div class="form-group"><label>ইমেইল</label><input class="form-control" id="si-email"></div>
+        </div>
+        <div class="form-group"><label>Google Map Embed URL</label><input class="form-control" id="si-mapEmbed" placeholder="https://www.google.com/maps?q=...&output=embed"></div>
+
+        <h3 style="color:var(--deep-green);margin:22px 0 12px">প্রধান শিক্ষকের তথ্য</h3>
+        <div class="form-row">
+          <div class="form-group"><label>নাম</label><input class="form-control" id="si-p-name"></div>
+          <div class="form-group"><label>পদবি</label><input class="form-control" id="si-p-designation"></div>
+        </div>
+        <div class="form-group"><label>ছবির URL</label><input class="form-control" id="si-p-photo" placeholder="https://..."></div>
+        <div class="form-group"><label>বাণী (Message)</label><textarea class="form-control" id="si-p-message" rows="3"></textarea></div>
+
+        <button type="submit" class="btn btn-primary mt-16">তথ্য সংরক্ষণ করুন</button>
+      </form>
+    </div>
+
+    <div class="admin-panel">
+      <h3 style="color:var(--deep-green);margin-bottom:6px">অ্যাডমিন ইউজার</h3>
+      <p style="color:var(--text-muted);font-size:.9rem">নতুন অ্যাডমিন যোগ করতে Firebase Console → Authentication → Add User থেকে ইমেইল/পাসওয়ার্ড দিয়ে অ্যাকাউন্ট তৈরি করুন। নিরাপত্তার স্বার্থে অ্যাডমিন তৈরি এই প্যানেল থেকে সরাসরি করা হয় না। বিস্তারিত README.md-এ দেখুন।</p>
+    </div>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  guardAdminPage();
+  const info = (window.__FB && window.__FB.firebaseReady)
+    ? ((await window.__FB.db.collection(window.__FB.COLLECTIONS.SCHOOL_INFO).doc("main").get()).data() || window.DEMO.schoolInfo)
+    : window.DEMO.schoolInfo;
+
+  document.getElementById("si-intro").value = info.intro || "";
+  document.getElementById("si-established").value = info.established || "";
+  document.getElementById("si-address").value = info.address || "";
+  document.getElementById("si-mission").value = info.mission || "";
+  document.getElementById("si-vision").value = info.vision || "";
+  document.getElementById("si-environment").value = info.environment || "";
+  document.getElementById("si-phone").value = info.phone || "";
+  document.getElementById("si-email").value = info.email || "";
+  document.getElementById("si-mapEmbed").value = info.mapEmbed || "";
+  const p = info.principal || {};
+  document.getElementById("si-p-name").value = p.name || "";
+  document.getElementById("si-p-designation").value = p.designation || "";
+  document.getElementById("si-p-photo").value = p.photo || "";
+  document.getElementById("si-p-message").value = p.message || "";
+
+  document.getElementById("school-info-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+      intro: document.getElementById("si-intro").value.trim(),
+      established: document.getElementById("si-established").value.trim(),
+      address: document.getElementById("si-address").value.trim(),
+      mission: document.getElementById("si-mission").value.trim(),
+      vision: document.getElementById("si-vision").value.trim(),
+      environment: document.getElementById("si-environment").value.trim(),
+      phone: document.getElementById("si-phone").value.trim(),
+      email: document.getElementById("si-email").value.trim(),
+      mapEmbed: document.getElementById("si-mapEmbed").value.trim(),
+      principal: {
+        name: document.getElementById("si-p-name").value.trim(),
+        designation: document.getElementById("si-p-designation").value.trim(),
+        photo: document.getElementById("si-p-photo").value.trim(),
+        message: document.getElementById("si-p-message").value.trim()
+      }
+    };
+    if (!window.__FB || !window.__FB.firebaseReady) { showToast("Firebase কনফিগার করা নেই (ডেমো মোড)", "error"); return; }
+    try {
+      await window.__FB.db.collection(window.__FB.COLLECTIONS.SCHOOL_INFO).doc("main").set(data, { merge: true });
+      showToast("স্কুলের তথ্য সংরক্ষণ করা হয়েছে");
+    } catch (err) { showToast("সংরক্ষণে সমস্যা: " + err.message, "error"); }
+  });
+});
+</script>
+</body>
+</html>

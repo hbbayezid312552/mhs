@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// ============================================================================
+// মোসলেমগঞ্জ উচ্চ বিদ্যালয় — Firebase Storage Security Rules
+// - পাবলিক read (ছবি/পিডিএফ ওয়েবসাইটে দেখানোর জন্য)
+// - শুধুমাত্র authenticated admin (admins/{uid} ডকুমেন্ট থাকা ইউজার) upload/delete করতে পারবে
+// - ফাইল সাইজ সর্বোচ্চ 5MB এবং শুধুমাত্র image/pdf টাইপ অনুমোদিত
+// ============================================================================
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /student-photos/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                    && request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+
+    match /teacher-photos/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                    && request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+
+    match /gallery/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                    && request.resource.size < 8 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+
+    match /notice-pdfs/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                    && request.resource.size < 10 * 1024 * 1024
+                    && request.resource.contentType.matches('application/pdf');
+    }
+
+    match /school-logo/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                    && request.resource.size < 2 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

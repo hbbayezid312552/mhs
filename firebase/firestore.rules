@@ -1,0 +1,82 @@
+rules_version = '2';
+
+// ============================================================================
+// মোসলেমগঞ্জ উচ্চ বিদ্যালয় — Firestore Security Rules
+//
+// নীতি:
+// - যে কেউ (public) শুধু "read" করতে পারবে — শিক্ষার্থীর স্পর্শকাতর তথ্য
+//   (guardianMobile, address, dob, fatherName, motherName) ক্লায়েন্ট কোড থেকেই
+//   পাবলিক পেজে দেখানো হয় না, তবে Firestore rules-এ পুরো ডকুমেন্ট read করার
+//   অনুমতি থাকে বলে সেই তথ্যও প্রযুক্তিগতভাবে fetch করা সম্ভব। সর্বোচ্চ সুরক্ষার
+//   জন্য বাস্তব প্রোডাকশনে এই ফিল্ডগুলো আলাদা sub-collection
+//   (students/{id}/private/main) এ রাখা এবং সেই sub-collection শুধুমাত্র
+//   isAdmin() দ্বারা read-protected রাখা উচিত। README.md-এ এই উন্নত সেটআপের
+//   ব্যাখ্যা দেওয়া আছে।
+// - শুধুমাত্র "admins" কালেকশনে থাকা authenticated ইউজার write করতে পারবে।
+// - results কালেকশনে published:false ডকুমেন্ট সাধারণ ইউজার read করতে পারবে না।
+// ============================================================================
+
+function isAdmin() {
+  return request.auth != null &&
+    exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /students/{studentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /teachers/{teacherId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /classes/{classId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /routines/{routineId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /exams/{examId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Only published results are publicly readable
+    match /results/{resultId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /notices/{noticeId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /schoolInfo/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins can read their own admin doc to verify role; only existing
+    // admins (or manually via Firebase Console) can add new admin docs.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if isAdmin();
+    }
+  }
+}

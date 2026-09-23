@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>নোটিশ ব্যবস্থাপনা | Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar"></aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="mobile-admin-toggle btn btn-outline btn-sm" id="admin-sidebar-toggle">☰ মেনু</button>
+      <h1>নোটিশ ব্যবস্থাপনা</h1>
+      <button class="btn btn-primary" id="add-notice-btn">+ নোটিশ যোগ করুন</button>
+    </div>
+    <div class="admin-panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>শিরোনাম</th><th>তারিখ</th><th>অবস্থা</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="notices-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="notice-modal">
+  <div class="modal-box">
+    <h3>নোটিশ যোগ/এডিট করুন</h3>
+    <form id="notice-form">
+      <input type="hidden" id="notice-doc-id">
+      <div class="form-group"><label>শিরোনাম</label><input class="form-control" id="n-title" required></div>
+      <div class="form-group"><label>তারিখ</label><input type="date" class="form-control" id="n-date" required></div>
+      <div class="form-group"><label>বিবরণ</label><textarea class="form-control" id="n-desc" rows="3" required></textarea></div>
+      <div class="form-group"><label>PDF যুক্ত করুন (ঐচ্ছিক)</label><input type="file" class="form-control" id="n-pdf" accept="application/pdf"></div>
+      <div class="flex gap-12 mt-16">
+        <button type="button" class="btn btn-outline btn-block" onclick="document.getElementById('notice-modal').classList.remove('open')">বাতিল</button>
+        <button type="submit" class="btn btn-primary btn-block">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/notices.js"></script>
+<script>document.addEventListener("DOMContentLoaded", () => guardAdminPage());</script>
+</body>
+</html>

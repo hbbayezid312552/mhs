@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ক্লাস রুটিন ব্যবস্থাপনা | Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar"></aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="mobile-admin-toggle btn btn-outline btn-sm" id="admin-sidebar-toggle">☰ মেনু</button>
+      <h1>ক্লাস রুটিন ব্যবস্থাপনা</h1>
+      <button class="btn btn-primary" id="add-routine-btn">+ রুটিন যোগ করুন</button>
+    </div>
+    <div class="admin-panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>শ্রেণি</th><th>দিন</th><th>পিরিয়ড</th><th>সময়</th><th>বিষয়/শিক্ষক</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="routine-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="routine-modal">
+  <div class="modal-box">
+    <h3>রুটিন এন্ট্রি</h3>
+    <form id="routine-form">
+      <input type="hidden" id="routine-doc-id">
+      <div class="form-row">
+        <div class="form-group"><label>শ্রেণি</label><select class="form-control" id="f-r-class" required></select></div>
+        <div class="form-group"><label>দিন</label><select class="form-control" id="f-r-day" required></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>পিরিয়ড</label><input class="form-control" id="f-r-period" placeholder="১ম" required></div>
+        <div class="form-group"><label>সময়</label><input class="form-control" id="f-r-time" placeholder="১০:০০ - ১০:৪৫" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>বিষয়</label><input class="form-control" id="f-r-subject" required></div>
+        <div class="form-group"><label>শিক্ষক</label><input class="form-control" id="f-r-teacher" required></div>
+      </div>
+      <div class="flex gap-12 mt-16">
+        <button type="button" class="btn btn-outline btn-block" onclick="closeRoutineModal()">বাতিল</button>
+        <button type="submit" class="btn btn-primary btn-block">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/routine.js"></script>
+<script>document.addEventListener("DOMContentLoaded", () => guardAdminPage());</script>
+</body>
+</html>
