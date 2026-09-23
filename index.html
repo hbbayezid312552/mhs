@@ -23,6 +23,36 @@ const supabaseClient = supabase.createClient(
     SUPABASE_KEY
 );
 </script>
+ <input type="file" id="imageFile" accept="image/*">
+<button onclick="uploadImage()">ছবি আপলোড</button>
+
+<script>
+async function uploadImage() {
+
+    const file = document.getElementById("imageFile").files[0];
+
+    if (!file) {
+        alert("আগে একটি ছবি নির্বাচন করুন");
+        return;
+    }
+
+    const fileName = Date.now() + "-" + file.name;
+
+    const { data, error } = await supabaseClient
+        .storage
+        .from("school-files")
+        .upload("gallery/" + fileName, file);
+
+    if (error) {
+        console.error(error);
+        alert("Upload হয়নি: " + error.message);
+        return;
+    }
+
+    alert("ছবি সফলভাবে Upload হয়েছে!");
+    console.log(data);
+}
+</script>
   <body>
 
 <header class="site-header">
