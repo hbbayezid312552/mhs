@@ -20,12 +20,12 @@
 
 // ⬇️ আপনার Firebase কনফিগারেশন এখানে বসান (Firebase Console থেকে কপি করুন)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBSHTr4EroWkMgL_4bT2ECsr3svdK75Ss0",
+  authDomain: "moslemganj-hs.firebaseapp.com",
+  projectId: "moslemganj-hs",
+  storageBucket: "moslemganj-hs.firebasestorage.app",
+  messagingSenderId: "454025121558",
+  appId: "1:454025121558:web:b4521504378b6caf0cca37"
 };
 
 // Firebase SDK লোড হয়েছে কিনা যাচাই করুন (index.html-এ CDN স্ক্রিপ্ট যুক্ত থাকতে হবে)
